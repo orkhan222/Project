@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Predictive Maintenance</title>
+</head>
+<body>
+    <h2>Predictive Maintenance Prediction</h2>
+    <form id="predictForm">
+        Air temperature [K]: <input type="number" id="airTemp" required><br>
+        Process temperature [K]: <input type="number" id="processTemp" required><br>
+        Rotational speed [rpm]: <input type="number" id="rotSpeed" required><br>
+        Torque [Nm]: <input type="number" id="torque" required><br>
+        Tool wear [min]: <input type="number" id="toolWear" required><br>
+        <button type="button" onclick="predictMaintenance()">Predict</button>
+    </form>
+    <p id="predictionResult"></p>
+
+    <script>
+        function predictMaintenance() {
+            const formData = {
+                'Air temperature [K]': document.getElementById('airTemp').value,
+                'Process temperature [K]': document.getElementById('processTemp').value,
+                'Rotational speed [rpm]': document.getElementById('rotSpeed').value,
+                'Torque [Nm]': document.getElementById('torque').value,
+                'Tool wear [min]': document.getElementById('toolWear').value
+            };
+            
+            fetch('http://127.0.0.1:5001/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('predictionResult').innerHTML = 'Prediction: ' + (data.prediction ? 'Maintenance Required' : 'No Maintenance Needed');
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
